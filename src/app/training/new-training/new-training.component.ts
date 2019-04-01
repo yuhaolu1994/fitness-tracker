@@ -1,7 +1,8 @@
 import { NgForm } from '@angular/forms';
-import { Exercise } from './../exercise.model';
 import { TrainingService } from './../training.service';
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-new-training',
@@ -9,12 +10,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit {
-  exercises: Exercise[] = [];
+  exercises: Observable<any>;
 
-  constructor(private trainingService: TrainingService) { }
+  constructor(
+    private trainingService: TrainingService,
+    private db: AngularFirestore
+  ) { }
 
   ngOnInit() {
-    this.exercises = this.trainingService.getAvailableExercises();
+    // real time change listener, no need to reload the app
+    this.exercises = this.db.collection('availableExercises').valueChanges();
   }
 
   // not reactive form method here
