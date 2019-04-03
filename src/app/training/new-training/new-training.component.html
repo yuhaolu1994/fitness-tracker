@@ -6,8 +6,8 @@
         <mat-form-field>
           <mat-select placeholder="Choose Exercise" ngModel name="exercise" required>
             <mat-option
-              *ngFor="let exercise of exercises | async"
-              [value]="exercise.name">
+              *ngFor="let exercise of exercises"
+              [value]="exercise.id">
               {{ exercise.name }}
             </mat-option>
           </mat-select>
