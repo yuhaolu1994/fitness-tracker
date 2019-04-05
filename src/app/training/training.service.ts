@@ -1,7 +1,8 @@
+import { UIService } from './../shared/ui.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subject, Subscription } from 'rxjs';
 import { Exercise } from './exercise.model';
-import { map, subscribeOn } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -13,14 +14,19 @@ export class TrainingService {
   private runningExercise: Exercise;
   private fbSubs: Subscription[] = [];
 
-  constructor(private db: AngularFirestore) { }
+  constructor(
+    private db: AngularFirestore,
+    private uiService: UIService
+  ) { }
 
   fetchAvailableExercises() {
+    this.uiService.loadingStateChanged.next(true);
     // real time change listener, no need to reload the app
     this.fbSubs.push(this.db
       .collection('availableExercises')
       .snapshotChanges()
       .pipe(map(docArray => {
+        // throw(new Error());
         return docArray.map(doc => {
           return {
             id: doc.payload.doc.id,
@@ -30,12 +36,17 @@ export class TrainingService {
             // calories: doc.payload.doc.data()['calories']
             ...doc.payload.doc.data()
           } as Exercise;
-        })
+        });
       }))
       .subscribe((exercises: Exercise[]) => {
+        this.uiService.loadingStateChanged.next(false);
         this.availableExercises = exercises;
         // use subject to emit the array data, subscribe this emit in new training component
         this.exercisesChanged.next([...this.availableExercises]);
+      }, error => {
+        this.uiService.loadingStateChanged.next(false);
+        this.uiService.showSnackbar('Fetching Exercises failed, please try again later', null, 3000);
+        this.exerciseChanged.next(null);
       }));
   }
 
