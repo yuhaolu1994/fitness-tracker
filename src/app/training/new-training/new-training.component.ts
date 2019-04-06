@@ -1,9 +1,10 @@
 import { NgForm } from '@angular/forms';
 import { TrainingService } from './../training.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Exercise } from '../exercise.model';
-import { UIService } from 'src/app/shared/ui.service';
+import { Store } from '@ngrx/store';
+import * as fromRoot from '../../app.reducer';
 
 @Component({
   selector: 'app-new-training',
@@ -13,20 +14,16 @@ import { UIService } from 'src/app/shared/ui.service';
 export class NewTrainingComponent implements OnInit, OnDestroy {
   // if define the exercises as Observable, use async pipe in the html page
   exercises: Exercise[];
-  isLoading = true;
+  isLoading$: Observable<boolean>;
   private exerciseSubscription: Subscription;
-  private loadingSubscription: Subscription;
 
   constructor(
     private trainingService: TrainingService,
-    private uiService: UIService
+    private store: Store<fromRoot.State>
   ) { }
 
   ngOnInit() {
-    // set up the listener/subscribe
-    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe(isLoading => {
-      this.isLoading = isLoading;
-    });
+    this.isLoading$ = this.store.select(fromRoot.getIsLoading);
     this.exerciseSubscription = this.trainingService.exercisesChanged.subscribe(exercises => {
       // receive the data emitted from service
       this.exercises = exercises;
@@ -49,9 +46,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     // only if the subscription is not undefined
     if (this.exerciseSubscription) {
       this.exerciseSubscription.unsubscribe();
-    }
-    if (this.loadingSubscription) {
-      this.loadingSubscription.unsubscribe();
     }
   }
 }
