@@ -1,24 +1,25 @@
-import { AuthService } from './../../auth/auth.sevice';
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
+import * as fromRoot from '../../app.reducer';
+import { AuthService } from 'src/app/auth/auth.sevice';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  @Output()
-  sidenavToggle = new EventEmitter<void>();
-  isAuth: boolean;
-  authSubscription: Subscription;
+export class HeaderComponent implements OnInit {
+  @Output() sidenavToggle = new EventEmitter<void>();
+  isAuth$: Observable<boolean>;
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private store: Store<fromRoot.State>,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.authSubscription = this.authService.authChange.subscribe(authStatus => {
-      this.isAuth = authStatus;
-    });
+    this.isAuth$ = this.store.select(fromRoot.getIsAuth);
   }
 
   onToggleSideNav() {
@@ -27,10 +28,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLogout() {
     this.authService.logout();
-  }
-
-  ngOnDestroy() {
-    // service register at the app module, use unsubscribe to remove memory leak
-    this.authSubscription.unsubscribe();
   }
 }

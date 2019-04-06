@@ -1,4 +1,3 @@
-import { Subject } from "rxjs";
 import { AuthData } from "./auth-data.model";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
@@ -8,11 +7,10 @@ import { UIService } from './../shared/ui.service';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
+import * as Auth from './auth.actions';
 
 @Injectable()
 export class AuthService {
-  authChange = new Subject<boolean>();
-  private isAuthenticated = false;
 
   constructor(
     private router: Router,
@@ -26,14 +24,11 @@ export class AuthService {
     // emit event when authentication state change
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        this.isAuthenticated = true;
-        // emit value through rxjs
-        this.authChange.next(true);
+        this.store.dispatch(new Auth.SetAuthenticated());
         this.router.navigate(['/training']);
       } else {
         this.trainingService.cancelSubscriptions();
-        this.isAuthenticated = false;
-        this.authChange.next(false);
+        this.store.dispatch(new Auth.SetUnauthenticated());
         this.router.navigate(['/login']);
       }
     });
@@ -74,11 +69,5 @@ export class AuthService {
 
   logout() {
     this.afAuth.auth.signOut();
-  }
-
-  isAuth() {
-    // undefined is a primitive value, null is an object
-    // use == for type conversion in this case, undefined != null returns false
-    return this.isAuthenticated;
   }
 }
