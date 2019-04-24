@@ -19,4 +19,8 @@ These instructions will record all the technical stacks used in this project.
 
 ## Architecture
 
+### App Module
+![](https://github.com/yuhaolu1994/fitness-tracker/blob/master/src/app/arts/Auth%20Module.png)
+
 ### Auth Module
+![](https://github.com/yuhaolu1994/fitness-tracker/blob/master/src/app/arts/App%20Module.png)
