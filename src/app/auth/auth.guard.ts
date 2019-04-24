@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate, CanLoad {
   }
 
   canLoad(route: Route) {
-    // store select returns observable so use take 1 here 
+    // store select returns observable so use take 1 here
     return this.store.select(fromRoot.getIsAuth).pipe(take(1));
   }
 }

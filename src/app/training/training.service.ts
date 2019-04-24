@@ -84,12 +84,12 @@ export class TrainingService {
         this.store.dispatch(new Training.SetFinishedTrainings(exercises));
       }));
   }
-  
+
   // cancel subscriptions when logout
   cancelSubscriptions() {
     this.fbSubs.forEach(sub => sub.unsubscribe());
   }
-  
+
   // save data to firebase after cancel or complete the exercise
   private addDataToDatabase(exercise: Exercise) {
     this.db.collection('finishedExercises').add(exercise);

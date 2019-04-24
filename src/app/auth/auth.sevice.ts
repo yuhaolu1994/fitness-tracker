@@ -1,6 +1,6 @@
-import { AuthData } from "./auth-data.model";
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
+import { AuthData } from './auth-data.model';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { TrainingService } from '../training/training.service';
 import { UIService } from './../shared/ui.service';
@@ -63,7 +63,7 @@ export class AuthService {
       .catch(error => {
         // this.uiService.loadingStateChanged.next(false);
         this.store.dispatch(new UI.StopLoading());
-        this.uiService.showSnackbar(error.message, null, 3000);        
+        this.uiService.showSnackbar(error.message, null, 3000);
       });
   }
 
