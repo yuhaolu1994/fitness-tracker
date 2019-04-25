@@ -1,7 +1,7 @@
 import { SharedModule } from './../shared/shared.module';
 import { NgModule } from '@angular/core';
 import { TrainingRoutingModule } from './training-routing.module';
-import { StoreModule } from '@ngrx/store'
+import { StoreModule } from '@ngrx/store';
 
 import { StopTrainingComponent } from './current-training/stop-training.component';
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
